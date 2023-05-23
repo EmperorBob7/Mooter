@@ -1,0 +1,62 @@
+:root {
+    --formMarginLeft: 10vw;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: grid;
+    grid-row: auto;
+    color: #eee;
+    align-items: center;
+    justify-content: center;
+    background-image: url("images/background.jpg");
+    background-position: center;
+    background-size: cover;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 5vw;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+main {
+    background-color: #222;
+    border: 5px solid #eee;
+    border-radius: 10px;
+    padding: 3vw;
+    font-size: 170%;
+    width: 40vw;
+}
+
+h2 {
+    margin-bottom: 5vh;
+    grid-area: "h2";
+    text-align: center;
+}
+
+input {
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+    margin-left: 25%;
+    padding-left: 2%;
+    padding-right: 5%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    border-radius: 10px;
+    width: 43%;
+    background-color: #555;
+    border: 1px solid white;
+    color: white;
+    font-size: 110%;
+    display: block;
+}
+
+label {
+    margin-left: 25%;
+    display: inline-block;
+    width: 12%;
+}
