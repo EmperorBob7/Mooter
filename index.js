@@ -3,7 +3,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const User = require("./schemas/user.js");
-const PORT = 3030;
+// const PORT = 3030;
 const app = express();
 const SALT_ROUNDS = 10;
 
@@ -79,7 +79,7 @@ app.get("/shutdown", async (req, res) => {
     await mongoose.disconnect();
 });
 
-app.listen(PORT, async () => {
+app.listen(process.env.PORT, async () => {
     await connectToDB();
     console.log(`Listening at http://localhost:${PORT}`);
 });
