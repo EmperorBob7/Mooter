@@ -81,5 +81,5 @@ app.get("/shutdown", async (req, res) => {
 
 app.listen(process.env.PORT, async () => {
     await connectToDB();
-    console.log(`Listening at http://localhost:${PORT}`);
+    console.log(`Listening at http://localhost:${process.env.PORT}`);
 });
