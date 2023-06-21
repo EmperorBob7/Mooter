@@ -6,26 +6,25 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Login Form</title>
+    <title>Mooter</title>
     <link rel="stylesheet" href="styles.css">
 
 </head>
 
 <body>
     <main>
-        <h2>Login</h2>
+        <h2><a href="./view.html">Moo</a></h2>
+        <h3>Logged in as <span id="name"></span></h3>
         <hr />
         <br />
         <form action="javascript:submitForm()">
-            <label>Username</label> <input type="text" id="username" name="username"/>
+            <textarea type="text" id="description" name="description"></textarea>
             <br/>
-            <label>Password</label> <input type="password" id="password" name="password"/>
-            <input type="submit" value="Submit"/>
+            <button id="submit">Submit</button>
         </form>
-        <a href="./index.html">Register</a>
     </main>
     <!-- your content here... -->
-    <script src="login.js"></script>
+    <script src="moo.js"></script>
 </body>
 
 </html>

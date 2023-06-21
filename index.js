@@ -1,16 +1,148 @@
 require("dotenv").config();
 const express = require("express");
+const session = require('express-session');
+const Filter = require("bad-words");
+const filter = new Filter({ placeHolder: "*" });
+
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
+const passport = require("passport");
+
 const User = require("./schemas/user.js");
-// const PORT = 3030;
+const Moo = require("./schemas/moo.js");
 const app = express();
+require("./passport-config.js")(passport); // Initialize Passport
+
+const PORT = process.env.PORT || 3030;
 const SALT_ROUNDS = 10;
 
 app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
-app.use(express.urlencoded({ extended: true })) // for form data
+app.use(express.urlencoded({ extended: true })); // for form data
+app.use(session({
+    secret: process.env.SESSION_HASH,
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 mongoose.set("strictQuery", false);
+
+async function getName(res, id) {
+    let user = await User.findById(id);
+    if (!user) {
+        return res.status(403).json({ msg: "Failed - Invalid ID" });
+    }
+    res.json({ name: user.name });
+}
+
+app.get("/getName", checkUnauthenticated, (req, res) => {
+    if (!req.user || !req.user._id) {
+        return res.status(403).json({ msg: "Failed - Something went wrong." });
+    }
+    getName(res, req.user._id);
+});
+
+app.get("/getName/:id", (req, res) => {
+    console.log(req.params);
+    if (!req.params.id) {
+        return res.status(403).json({ msg: "Failed - Invalid ID" });
+    }
+    getName(res, req.params.id);
+});
+
+app.get("/moos", async (req, res) => {
+    let moos = await Moo.find({});
+    console.log(moos);
+    res.json(moos);
+});
+
+app.post("/moo", checkUnauthenticated, async (req, res) => {
+    if (!req.user || !req.user._id || !req.body || !req.body.description) {
+        return res.status(403).json({ msg: "Failed - Something went wrong." });
+    }
+    let user = await User.findById(req.user._id);
+    if (!user) {
+        return res.status(403).json({ msg: "Invalid Credentials" });
+    }
+    await Moo.insertMany({
+        poster: user._id,
+        description: filter.clean(req.body.description),
+        date: Date.now()
+    });
+    return res.status(200).json({ msg: "Success" });
+});
+
+app.get("/users", async (req, res) => {
+    let out = await User.find({});
+    out = out.map(user => [user.name, user._id]);
+    res.json(out);
+});
+
+app.post("/register", async (req, res) => {
+    const inputs = req.body;
+    if (!inputs || !inputs.username || !inputs.password) {
+        return res.status(403).json({ msg: "Failed - Something went wrong" });
+    }
+    if (inputs.password.length < 5) {
+        return res.status(403).json({ msg: "Failed - Password must be at least 5 characters." });
+    }
+    if (inputs.username.length < 3) {
+        return res.status(403).json({ msg: "Failed - Username must be at least 3 characters." });
+    }
+    if (filter.isProfane(inputs.username)) {
+        return res.status(403).json({ msg: "Failed - Username is profane." });
+    }
+
+    inputs.username = inputs.username.toLowerCase();
+    let nameAlreadyUsed = await User.findOne({ name: inputs.username });
+    if (nameAlreadyUsed !== null) {
+        return res.status(503).json({ msg: "Failed - Name Taken", status: 503 });
+    }
+
+    const hash = bcrypt.hashSync(inputs.password, SALT_ROUNDS);
+    User.insertMany({
+        name: inputs.username,
+        password: hash
+    });
+    res.redirect("/login.html");
+});
+
+app.post("/login", checkAuthenticated, (req, res) => {
+    passport.authenticate('local', { session: true }, function (err, user, info) {
+        if (!user) {
+            console.log("Failure");
+            return res.json(info);
+        }
+        req.logIn(user, function (err) {
+            if (err) { throw err; }
+            // session saved
+            res.json(info);
+        });
+    })(req, res);
+});
+
+/* AUTHENTICATION */
+
+async function checkAuthenticated(req, res, next) {
+    if (req.user && req.user._id) {
+        const user = await User.findById(req.user._id);
+        if (user)
+            return res.redirect("/moo.html");
+    }
+    next();
+}
+
+async function checkUnauthenticated(req, res, next) {
+    if (req.user && req.user._id) {
+        const user = await User.findById(req.user._id);
+        if (user)
+            return next();
+    }
+    res.redirect("/login.html");
+}
+
+/* DATABASE + PORT BELOW */
 
 async function connectToDB() {
     try {
@@ -21,65 +153,15 @@ async function connectToDB() {
     }
 }
 
-app.get("/users", async (req, res) => {
-    let out = await User.find({});
-    out = out.map(user => [user.name, user._id]);
-    res.json(out);
-});
-
-app.post("/register", async (req, res) => {
-    const inputs = req.body;
-    console.log(inputs);
-    if (!inputs.username || !inputs.password) {
-        res.send({ msg: "Failed - Something went wrong.", status: 403 });
-        return;
-    }
-    if (inputs.password.length < 5) {
-        res.send({ msg: "Failed - Password must be at least 5 characters.", status: 403 });
-        return;
-    }
-
-    inputs.username = inputs.username.toLowerCase();
-    let nameAlreadyUsed = await User.findOne({ name: inputs.username });
-    if (nameAlreadyUsed !== null) {
-        res.send({ msg: "Failed - Name Taken", status: 503 });
-        return;
-    }
-
-    const hash = bcrypt.hashSync(inputs.password, SALT_ROUNDS);
-    User.insertMany({
-        name: inputs.username,
-        password: hash
-    });
-    res.send({ msg: "Success", status: 200 });
-});
-
-app.post("/login", async (req, res) => {
-    const inputs = req.body;
-    console.log(inputs);
-    if (!inputs.username || !inputs.password) {
-        res.send({ msg: "Failed - Something went wrong.", status: 403 });
-        return;
-    }
-
-    inputs.username = inputs.username.toLowerCase();
-    const hash = bcrypt.hashSync(inputs.password, SALT_ROUNDS);
-    console.log(hash);
-
-    let foundAccount = await User.findOne({ name: inputs.username});
-    console.log(bcrypt.compareSync(inputs.password, foundAccount.password));
-    if (bcrypt.compareSync(inputs.password, foundAccount.password)) {
-        res.send({ msg: "Success", status: 200 });
-        return;
-    }
-    res.send({ msg: "Failure, Password was incorrect", status: 200 });
-});
-
 app.get("/shutdown", async (req, res) => {
+    if (!req.user || !req.user.name || req.user.name != "bob") {
+        return res.json({ msg: "No permission for this action" });
+    }
     await mongoose.disconnect();
+    res.json({ msg: "Success" });
 });
 
-app.listen(process.env.PORT, async () => {
+app.listen(PORT, async () => {
     await connectToDB();
     console.log(`Listening at http://localhost:${process.env.PORT}`);
 });

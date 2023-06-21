@@ -2,7 +2,7 @@ async function submitForm() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    let res = await fetch("/register", {
+    let res = await fetch("/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -16,7 +16,7 @@ async function submitForm() {
     }
     res = await res.json();
     if (res.status != 200) {
-        alert(res.msg);
+        alert(res.message);
     } else {
         window.location = "/moo.html";
     }
