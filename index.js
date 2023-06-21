@@ -7,6 +7,7 @@ const filter = new Filter({ placeHolder: "*" });
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const passport = require("passport");
+const MongoStore = require('connect-mongo');
 
 const User = require("./schemas/user.js");
 const Moo = require("./schemas/moo.js");
@@ -22,7 +23,11 @@ app.use(express.urlencoded({ extended: true })); // for form data
 app.use(session({
     secret: process.env.SESSION_HASH,
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 3600000 // 1 hour
+    },
+    store: MongoStore.create({ client: connectToDB().then(() => mongoose.connection.getClient()) })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -146,7 +151,7 @@ async function checkUnauthenticated(req, res, next) {
 
 async function connectToDB() {
     try {
-        await mongoose.connect(`mongodb+srv://emperorbob:${process.env.PASSWORD}@cluster0.d100l.mongodb.net/myDB?retryWrites=true&w=majority`);
+        let x = await mongoose.connect(`mongodb+srv://emperorbob:${process.env.PASSWORD}@cluster0.d100l.mongodb.net/myDB?retryWrites=true&w=majority`);
         console.log("connected");
     } catch (e) {
         console.log(e.message);
@@ -162,6 +167,5 @@ app.get("/shutdown", async (req, res) => {
 });
 
 app.listen(PORT, async () => {
-    await connectToDB();
     console.log(`Listening at http://localhost:${process.env.PORT}`);
 });
