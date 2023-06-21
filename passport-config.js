@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("./schemas/user.js");
 
 async function authenticateUser(username, password, done) {
+    username = username.toLowerCase();
     const user = await User.findOne({ name: username });
     if (user == null) {
         return done(null, false, { message: "No user with that name.", status: 400 });
