@@ -70,6 +70,9 @@ app.post("/moo", checkUnauthenticated, async (req, res) => {
     if (!user) {
         return res.status(403).json({ msg: "Invalid Credentials" });
     }
+    if(req.body.description.length > 250) {
+        return res.status(403).json({ msg: "250 Character Limit" });
+    }
     await Moo.insertMany({
         poster: user._id,
         description: filter.clean(req.body.description),
@@ -92,9 +95,10 @@ app.post("/register", async (req, res) => {
     if (inputs.password.length < 5) {
         return res.status(403).json({ msg: "Failed - Password must be at least 5 characters." });
     }
-    if (inputs.username.length < 3) {
-        return res.status(403).json({ msg: "Failed - Username must be at least 3 characters." });
+    if (inputs.username.length < 3 || inputs.username.length > 15) {
+        return res.status(403).json({ msg: "Failed - Username must be at least 3 characters and less than 16." });
     }
+
     if (filter.isProfane(inputs.username)) {
         return res.status(403).json({ msg: "Failed - Username is profane." });
     }
