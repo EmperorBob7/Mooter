@@ -11,9 +11,7 @@ window.onload = async () => {
             idNameMap[moo.poster] = name;
         }
         moo.poster = idNameMap[moo.poster];
-        console.log(moo);
     }
-
     drawGUI(data);
 }
 

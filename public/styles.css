@@ -59,12 +59,6 @@ label {
     width: 12%;
 }
 
-textarea {
-    width: 35vw;
-    height: 50vh;
-    font-size: 120%;
-}
-
 button {
     padding: 0.5%;
     font-size: 75%;

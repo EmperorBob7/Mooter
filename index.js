@@ -6,8 +6,8 @@ const filter = new Filter({ placeHolder: "*" });
 
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
-const passport = require("passport");
 const MongoStore = require('connect-mongo');
+const passport = require("passport");
 
 const User = require("./schemas/user.js");
 const Moo = require("./schemas/moo.js");
@@ -16,6 +16,7 @@ require("./passport-config.js")(passport); // Initialize Passport
 
 const PORT = process.env.PORT || 3030;
 const SALT_ROUNDS = 10;
+let currentMoos = [], newMoo = true;
 
 app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
@@ -57,9 +58,11 @@ app.get("/getName/:id", (req, res) => {
 });
 
 app.get("/moos", async (req, res) => {
-    let moos = await Moo.find({});
-    console.log(moos);
-    res.json(moos);
+    if (newMoo) {
+        newMoo = false;
+        currentMoos = await Moo.find({});
+    }
+    res.json(currentMoos);
 });
 
 app.post("/moo", checkUnauthenticated, async (req, res) => {
@@ -70,7 +73,7 @@ app.post("/moo", checkUnauthenticated, async (req, res) => {
     if (!user) {
         return res.status(403).json({ msg: "Invalid Credentials" });
     }
-    if(req.body.description.length > 250) {
+    if (req.body.description.length > 250) {
         return res.status(403).json({ msg: "250 Character Limit" });
     }
     await Moo.insertMany({
@@ -78,6 +81,7 @@ app.post("/moo", checkUnauthenticated, async (req, res) => {
         description: filter.clean(req.body.description),
         date: Date.now()
     });
+    newMoo = true;
     return res.status(200).json({ msg: "Success" });
 });
 

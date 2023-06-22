@@ -1,0 +1,35 @@
+form {
+    position: relative;
+}
+
+#characterLimit {
+    color: rgb(84, 230, 84);
+    position: absolute;
+    font-size: 80%;
+    right: 6%;
+    bottom: 10%;
+    font-weight: bold;
+}
+
+textarea {
+    width: 35vw;
+    height: 50vh;
+    font-size: 120%;
+    padding: 1%;
+    resize: none;
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+textarea:focus {
+    outline: none;
+}
+
+#characterLimit.low {
+    color: red;
+}
+
+#characterLimit.medium {
+    color: yellow;
+}
