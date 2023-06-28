@@ -16,7 +16,7 @@ require("./passport-config.js")(passport); // Initialize Passport
 
 const PORT = process.env.PORT || 3030;
 const SALT_ROUNDS = 10;
-let currentMoos = [], newMoo = true;
+let currentMoos = [], newMoo = true, nameMap = {};
 
 app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
@@ -35,11 +35,14 @@ app.use(passport.session());
 mongoose.set("strictQuery", false);
 
 async function getName(res, id) {
-    let user = await User.findById(id);
-    if (!user) {
-        return res.status(403).json({ msg: "Failed - Invalid ID" });
+    if (!nameMap[id]) {
+        let user = await User.findById(id);
+        if (!user) {
+            return res.status(403).json({ msg: "Failed - Invalid ID" });
+        }
+        nameMap[id] = user.name;
     }
-    res.json({ name: user.name });
+    return res.json({ name: nameMap[id] });
 }
 
 app.get("/getName", checkUnauthenticated, (req, res) => {
