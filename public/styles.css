@@ -1,5 +1,9 @@
 :root {
     --formMarginLeft: 10vw;
+    --bright: #eee;
+    --dark: #202632;
+    --mid: #ccc;
+    --green: #02c9ab;
 }
 
 * {
@@ -10,14 +14,13 @@
 body {
     display: grid;
     grid-row: auto;
-    color: #eee;
+    color: var(--bright);
     align-items: center;
     justify-content: center;
-    background-color: #222;
+    background-color: var(--dark);
     background-position: center;
     background-size: cover;
     font-family: Arial, Helvetica, sans-serif;
-    padding: 5vw;
     width: 100vw;
     height: 100vh;
     box-sizing: border-box;
@@ -25,31 +28,31 @@ body {
 }
 
 main {
-    background-color: #222;
-    border: 5px solid #eee;
+    background-color: var(--dark);
+    border: 5px solid var(--bright);
     border-radius: 10px;
     padding: 2vw;
     font-size: 170%;
     width: 40vw;
+    height: 80vh;
 }
 
 h2 {
-    margin-bottom: 5vh;
+    margin-bottom: 2vh;
     grid-area: "h2";
 }
 
-input:not([type=file]) {
-    margin-top: vh;
+button {
+    margin-top: 1vh;
     margin-bottom: 3vh;
     padding-left: 2%;
     padding-right: 5%;
     padding-top: 1%;
     padding-bottom: 1%;
-    border-radius: 10px;
     width: 43%;
-    background-color: #555;
-    border: 1px solid white;
-    color: white;
+    background-color: transparent;
+    border: 1px solid;
+    color: var(--bright);
     font-size: 110%;
     display: inline;
 }
@@ -60,10 +63,64 @@ label {
 }
 
 button {
-    padding: 0.5%;
+    padding: 0.75vw;
     font-size: 75%;
+    background-color: var(--bright);
+    width: 30%;
+    color: var(--dark);
+    border-radius: 100px;
 }
 
 a {
-    color: red;
+    color: var(--green);
+}
+
+.small {
+    font-size: 75%;
+}
+
+
+/*Floating Label*/
+.float-container {
+    width: 43%;
+    border: solid 1px var(--mid);
+    padding: 0 1vw;
+    position: relative;
+    margin: auto;
+    text-align: left;
+    display: flex;
+    align-items: self-start;
+}
+
+.float-container input {
+    border: none;
+    font-size: 70%;
+    margin: 1vw;
+    outline: 0;
+    width: 100%;
+
+    background-color: transparent;
+    color: var(--bright);
+}
+
+.float-container label {
+    user-select: none;
+    pointer-events: none;
+    font-size: 70%;
+    position: absolute;
+    transform-origin: top left;
+    transform: translate(0, 16px) scale(1);
+    transition: all .1s ease-in-out;
+}
+
+.float-container.active-color {
+    border: solid 1px var(--green);
+}
+
+.float-container.active-color label {
+    color: var(--green);
+}
+
+.float-container.active label {
+    transform: scale(.75);
 }

@@ -13,19 +13,27 @@
 
 <body>
     <main>
-        <h2>Register</h2>
+        <h2>Join Mooter Today</h2>
         <hr />
         <br />
         <form action="javascript:submitForm()">
-            <label>Username</label> <input type="text" id="username" name="username"/>
-            <br/>
-            <label>Password</label> <input type="password" id="password" name="password"/>
-            <input type="submit" value="Submit"/>
+            <div class="float-container">
+                <label>Username</label>
+                <input id="username" name="username" type="text" class="float-field" autocomplete="off">
+            </div>
+            <br />
+            <div class="float-container">
+                <label>Password</label>
+                <input id="password" name="password" type="password" class="float-field" autocomplete="off">
+            </div>
+            <br />
+            <button id="submit">Submit</button>
         </form>
-        <a href="./login.html">Login</a>
+        <p class="small">Have an account already? <a href="./login.html">Login</a></p>
     </main>
     <!-- your content here... -->
     <script src="scripts.js"></script>
+    <script src="floatInput.js"></script>
 </body>
 
 </html>

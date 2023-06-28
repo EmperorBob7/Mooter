@@ -1,5 +1,17 @@
+:root {
+    --formMarginLeft: 10vw;
+    --bright: #eee;
+    --dark: #202632;
+    --mid: #ccc;
+    --green: #02c9ab;
+}
+
+main {
+    height: fit-content;
+}
+
 .mooBox {
-    background-color: #444;
+    background-color: var(--dark);
     margin: 4%;
     padding: 2% 1% 0% 2%;
     display: grid;
@@ -10,6 +22,7 @@
                    ". dat";
     width: 35vw;
     height: min-content;
+    border: 1px solid var(--bright);
 }
 
 .mooName {

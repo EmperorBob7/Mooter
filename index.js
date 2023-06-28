@@ -34,8 +34,20 @@ app.use(passport.initialize());
 app.use(passport.session());
 mongoose.set("strictQuery", false);
 
+async function populateNameMap() {
+    let users = await User.find({});
+    for (let user of users) {
+        if (nameMap[user._id]) {
+            continue;
+        }
+        nameMap[user._id] = user.name;
+        console.log(user.name + " added to Cache.");
+    }
+}
+
 async function getName(res, id) {
     if (!nameMap[id]) {
+        console.log("Accessing DB for Name");
         let user = await User.findById(id);
         if (!user) {
             return res.status(403).json({ msg: "Failed - Invalid ID" });
@@ -58,6 +70,10 @@ app.get("/getName/:id", (req, res) => {
         return res.status(403).json({ msg: "Failed - Invalid ID" });
     }
     getName(res, req.params.id);
+});
+
+app.get("/getAllNames", (req, res) => {
+    res.json(nameMap);
 });
 
 app.get("/moos", async (req, res) => {
@@ -117,10 +133,14 @@ app.post("/register", async (req, res) => {
     }
 
     const hash = bcrypt.hashSync(inputs.password, SALT_ROUNDS);
-    User.insertMany({
+    await User.insertMany({
         name: inputs.username,
         password: hash
     });
+
+    let user = await User.find({ name: inputs.username });
+    nameMap[user._id] = user.name;
+
     res.redirect("/login.html");
 });
 
@@ -178,5 +198,6 @@ app.get("/shutdown", async (req, res) => {
 });
 
 app.listen(PORT, async () => {
+    populateNameMap();
     console.log(`Listening at http://localhost:${process.env.PORT}`);
 });

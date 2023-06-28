@@ -13,19 +13,27 @@
 
 <body>
     <main>
-        <h2>Login</h2>
+        <h2>Sign in to Mooter</h2>
         <hr />
         <br />
         <form action="javascript:submitForm()">
-            <label>Username</label> <input type="text" id="username" name="username"/>
-            <br/>
-            <label>Password</label> <input type="password" id="password" name="password"/>
-            <input type="submit" value="Submit"/>
+            <div class="float-container">
+                <label>Username</label>
+                <input id="username" name="username" type="text" class="float-field">
+            </div>
+            <br />
+            <div class="float-container">
+                <label>Password</label>
+                <input id="password" name="password" type="password" class="float-field">
+            </div>
+            <br />
+            <button id="submit">Submit</button>
         </form>
-        <a href="./index.html">Register</a>
+        <p class="small">Don't have an account? <a href="./index.html">Register</a></p>
     </main>
     <!-- your content here... -->
     <script src="login.js"></script>
+    <script src="floatInput.js"></script>
 </body>
 
 </html>

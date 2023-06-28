@@ -2,21 +2,22 @@ window.onload = async () => {
     let data = await fetch("/moos", { method: "GET" });
     data = await data.json();
 
-    let idNameMap = {};
+    let names = await fetch("/getAllNames", { method: "GET" });
+    let idNameMap = await names.json();
     for (let moo of data) {
-        if (idNameMap[moo.poster] === undefined) {
-            let name = await fetch(`/getName/${moo.poster}`, { method: "GET" });
-            name = await name.json();
-            name = name.name;
-            idNameMap[moo.poster] = name;
-        }
+        // if (idNameMap[moo.poster] === undefined) {
+        //     let name = await fetch(`/getName/${moo.poster}`, { method: "GET" });
+        //     name = await name.json();
+        //     name = name.name;
+        //     idNameMap[moo.poster] = name;
+        // }
         moo.poster = idNameMap[moo.poster];
     }
     drawGUI(data);
 }
 
 function drawGUI(moos) {
-    for(let moo of moos) {
+    for (let moo of moos) {
         let mooBox = document.createElement("div");
         mooBox.classList.add("mooBox");
 
