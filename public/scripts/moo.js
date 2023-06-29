@@ -50,11 +50,11 @@ async function submitForm() {
 function updateLimit() {
     let current = CHARACTER_LIMIT - description.value.length;
     characterLimit.innerText = current;
-    
+
     characterLimit.classList = "";
     if (current < 100) {
         characterLimit.classList.add("low");
-    } else if(current < 175) {
+    } else if (current < 175) {
         characterLimit.classList.add("medium");
     }
 }

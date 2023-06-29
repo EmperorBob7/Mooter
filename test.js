@@ -16,30 +16,8 @@ async function connectToDB() {
         await mongoose.connect(`mongodb+srv://emperorbob:${process.env.PASSWORD}@cluster0.d100l.mongodb.net/myDB?retryWrites=true&w=majority`);
         console.log("connected");
 
-        User.insertMany({
-            name: "bob",
-            password: "deez"
-        });
-
-        console.log(await User.findOne({name: "bob"}));
-        console.log(await User.findOne({name: "jeff"}));
-
-        await mongoose.disconnect();
-
-        // const bob = new Player({
-        //     name: "joe",
-        //     currency: 1985
-        // });
-        // Player.insertMany({
-        //     name: "ligma",
-        //     currency: 100
-        // });
-
-        // let result = await Player.findOne({name: "bob", currency: 2500});
-        // await result.updateOne({currency: 3000});
-        // await result.save();
-
-        // await bob.save();
+        await User.updateMany({}, { description: "T.B.D." });
+        console.log("DONE");
     } catch (e) {
         console.log(e.message);
     }

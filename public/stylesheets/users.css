@@ -1,0 +1,66 @@
+body {
+    display: grid;
+    grid-template-areas: ". main users";
+    column-gap: 2vw;
+}
+
+main {
+    grid-area: main;
+}
+
+aside {
+    grid-area: users;
+    width: 20vw;
+}
+
+#usersContainer {
+    overflow: hidden;
+    height: 90%;
+    margin-top: 2.5vh;
+}
+
+#listUsers {
+    width: 100%;
+    margin: auto;
+    text-align: left;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+#listUsers a {
+    color: var(--bright);
+    text-decoration: none;
+}
+
+.userBox {
+    width: 100%;
+    padding: 0.5vw;
+    display: grid;
+    grid-template-areas: "pfp name"
+        "pfp desc";
+    grid-template-columns: 1fr 4fr;
+    column-gap: 1vw;
+    margin: 0vh auto 0vh auto;
+}
+
+.userBox:hover {
+    background-color: var(--dark-hover);
+}
+
+.boxImage {
+    width: 90%;
+    grid-area: pfp;
+}
+
+.boxName {
+    grid-area: name;
+    text-align: left;
+    font-size: 80%;
+}
+
+.boxDesc {
+    grid-area: desc;
+    font-size: 50%;
+    width: 100%;
+}

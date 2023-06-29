@@ -40,7 +40,7 @@ async function populateNameMap() {
         if (nameMap[user._id]) {
             continue;
         }
-        nameMap[user._id] = user.name;
+        nameMap[user._id] = { name: user.name, description: user.description };
         console.log(user.name + " added to Cache.");
     }
 }
@@ -54,7 +54,7 @@ async function getName(res, id) {
         }
         nameMap[id] = user.name;
     }
-    return res.json({ name: nameMap[id] });
+    return res.json({ name: nameMap[id].name });
 }
 
 app.get("/getName", checkUnauthenticated, (req, res) => {
@@ -76,7 +76,14 @@ app.get("/getAllNames", (req, res) => {
     res.json(nameMap);
 });
 
-app.get("/moos", async (req, res) => {
+app.get("/moos/:id", async (req, res) => {
+    if (!req.params.id) {
+        return res.status(403).json({ msg: "Failed - Invalid ID" });
+    }
+    res.json(await Moo.find({ poster: req.params.id }));
+});
+
+app.get("/moos", checkUnauthenticated, async (req, res) => {
     if (newMoo) {
         newMoo = false;
         currentMoos = await Moo.find({});
@@ -106,7 +113,7 @@ app.post("/moo", checkUnauthenticated, async (req, res) => {
 
 app.get("/users", async (req, res) => {
     let out = await User.find({});
-    out = out.map(user => [user.name, user._id]);
+    out = out.map(user => [user.name, user._id, user.description]);
     res.json(out);
 });
 
@@ -135,11 +142,12 @@ app.post("/register", async (req, res) => {
     const hash = bcrypt.hashSync(inputs.password, SALT_ROUNDS);
     await User.insertMany({
         name: inputs.username,
-        password: hash
+        password: hash,
+        description: "T.B.D."
     });
 
     let user = await User.find({ name: inputs.username });
-    nameMap[user._id] = user.name;
+    nameMap[user._id] = { name: user.name, description: user.description };
 
     res.redirect("/login.html");
 });
@@ -162,18 +170,18 @@ app.post("/login", checkAuthenticated, (req, res) => {
 
 async function checkAuthenticated(req, res, next) {
     if (req.user && req.user._id) {
-        const user = await User.findById(req.user._id);
-        if (user)
-            return res.redirect("/moo.html");
+        // const user = await User.findById(req.user._id);
+        // if (user)
+        return res.redirect("/moo.html");
     }
     next();
 }
 
 async function checkUnauthenticated(req, res, next) {
     if (req.user && req.user._id) {
-        const user = await User.findById(req.user._id);
-        if (user)
-            return next();
+        // const user = await User.findById(req.user._id);
+        // if (user)
+        return next();
     }
     res.redirect("/login.html");
 }
@@ -195,6 +203,7 @@ app.get("/shutdown", async (req, res) => {
     }
     await mongoose.disconnect();
     res.json({ msg: "Success" });
+    process.exit(1);
 });
 
 app.listen(PORT, async () => {

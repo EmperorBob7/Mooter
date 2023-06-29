@@ -7,26 +7,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Mooter</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="moo.css">
-
+    <link rel="stylesheet" href="./stylesheets/styles.css">
+    <link rel="stylesheet" href="./stylesheets/moo.css">
+    <link rel="stylesheet" href="./stylesheets/users.css">
 </head>
 
 <body>
     <main>
-        <h2><a href="./view.html">Moo</a></h2>
+        <!-- <h2><a href="./view.html">Moo</a></h2> -->
         <h3>Logged in as <span id="name"></span></h3>
         <hr />
         <br />
         <form action="javascript:submitForm()">
             <span id="characterLimit">250</span>
-            <textarea type="text" id="description" name="description" oninput="updateLimit()" maxlength="250" placeholder="Type here..."></textarea>
-            <br/>
+            <textarea type="text" id="description" name="description" oninput="updateLimit()" maxlength="250"
+                placeholder="Type here..."></textarea>
+            <br />
             <button id="submit">Submit</button>
         </form>
     </main>
+    <aside>
+        <h3>Users</h3>
+        <hr>
+        <div id="usersContainer">
+            <div id="listUsers"></div>
+        </div>
+    </aside>
     <!-- your content here... -->
-    <script src="moo.js"></script>
+    <script src="./scripts/moo.js"></script>
+    <script src="./scripts/users.js"></script>
 </body>
 
 </html>

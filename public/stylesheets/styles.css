@@ -2,8 +2,10 @@
     --formMarginLeft: 10vw;
     --bright: #eee;
     --dark: #202632;
+    --dark-hover: #353e51;
     --mid: #ccc;
     --green: #02c9ab;
+    --green-dark: #02907b;
 }
 
 * {
@@ -27,14 +29,16 @@ body {
     text-align: center;
 }
 
-main {
+main, aside {
     background-color: var(--dark);
-    border: 5px solid var(--bright);
-    border-radius: 10px;
+    border: 2px solid var(--bright);
+    border-radius: 5px;
     padding: 2vw;
     font-size: 170%;
     width: 40vw;
     height: 80vh;
+    max-height: 80vh;
+    overflow-y: hidden;
 }
 
 h2 {
@@ -98,7 +102,6 @@ a {
     margin: 1vw;
     outline: 0;
     width: 100%;
-
     background-color: transparent;
     color: var(--bright);
 }
@@ -123,4 +126,24 @@ a {
 
 .float-container.active label {
     transform: scale(.75);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 0.6vw;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: var(--bright);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 3px solid transparent;
+    background-color: var(--green);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: var(--green-dark);
 }

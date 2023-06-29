@@ -1,0 +1,15 @@
+#contentContainer {
+    overflow: hidden;
+    display: block;
+    height: 100vh;
+    margin-top: 2.5vh;
+}
+
+#contentList {
+    width: 100%;
+    margin: auto;
+    text-align: left;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 72%;
+}

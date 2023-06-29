@@ -3,11 +3,11 @@ form {
 }
 
 #characterLimit {
-    color: rgb(84, 230, 84);
+    color: var(--green);
     position: absolute;
     font-size: 80%;
     right: 6%;
-    bottom: 20%;
+    bottom: 19%;
     font-weight: bold;
 }
 
