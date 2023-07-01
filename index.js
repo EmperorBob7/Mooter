@@ -1,14 +1,20 @@
 require("dotenv").config();
 const express = require("express");
 const session = require('express-session');
+const rateLimit = require('express-rate-limit').rateLimit;
+
+// Content Filter
 const Filter = require("bad-words");
 const filter = new Filter({ placeHolder: "*" });
+module.exports.filter = filter;
+module.exports.addName = addName;
 
-const bcrypt = require("bcrypt");
+// Authentication
 const mongoose = require("mongoose");
 const MongoStore = require('connect-mongo');
 const passport = require("passport");
 
+// Personal Files
 const User = require("./schemas/user.js");
 const Moo = require("./schemas/moo.js");
 const auth = require("./auth/auth.js");
@@ -16,7 +22,6 @@ const app = express();
 require("./passport-config.js")(passport); // Initialize Passport
 
 const PORT = process.env.PORT || 3030;
-const SALT_ROUNDS = 10;
 let currentMoos = [], newMoo = true, nameMap = {};
 
 app.use(express.static("public"));
@@ -33,6 +38,11 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(rateLimit({
+    windowMs: 60 * 1000, // 1 Minute
+    max: 50,
+    standardHeaders: true
+}));
 mongoose.set("strictQuery", false);
 
 app.use("/auth", auth); // Routing
@@ -105,7 +115,7 @@ async function populateNameMap() {
         if (nameMap[user._id]) {
             continue;
         }
-        nameMap[user._id] = { name: user.name, description: user.description };
+        addName(user.name, user._id, user.description);
         console.log(user.name + " added to Cache.");
     }
 }
@@ -120,6 +130,10 @@ async function getName(res, id) {
         nameMap[id] = user.name;
     }
     return res.json({ name: nameMap[id].name });
+}
+
+function addName(name, id, desc) {
+    nameMap[id] = { name: name, description: desc };
 }
 
 /* AUTHENTICATION */

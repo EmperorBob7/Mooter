@@ -1,7 +1,12 @@
 const express = require("express");
+const passport = require("passport");
+const bcrypt = require("bcrypt");
+
 const router = express.Router();
 const User = require("../schemas/user.js");
-const passport = require("passport");
+const filter = require("../index.js").filter;
+const addName = require("../index.js").addName;
+const SALT_ROUNDS = 10;
 
 router.post("/register", async (req, res) => {
     const inputs = req.body;
@@ -33,8 +38,7 @@ router.post("/register", async (req, res) => {
     });
 
     let user = await User.find({ name: inputs.username });
-    nameMap[user._id] = { name: user.name, description: user.description };
-
+    addName(user.name, user._id, user.description);
     res.redirect("/login.html");
 });
 
