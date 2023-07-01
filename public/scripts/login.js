@@ -2,7 +2,7 @@ async function submitForm() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    let res = await fetch("/login", {
+    let res = await fetch("/auth/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

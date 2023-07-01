@@ -1,11 +1,11 @@
 async function loadUsers() {
     let res = await fetch("/users", { method: "GET" });
-    let data = await res.json();
-    // [name, id, description]
+    let data = await res.json(); // [name, id, description]
+
     let userAside = document.getElementById("listUsers");
     let templateURL = "/userpage.html?id=*";
     if(window.location.pathname == "/userpage.html") {
-        templateURL = `javascript: loadMoos("*")`; 
+        templateURL = `javascript: loadMoos("*")`; // Efficiency
     }
 
     for (let user of data) {

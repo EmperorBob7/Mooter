@@ -11,6 +11,7 @@ const passport = require("passport");
 
 const User = require("./schemas/user.js");
 const Moo = require("./schemas/moo.js");
+const auth = require("./auth/auth.js");
 const app = express();
 require("./passport-config.js")(passport); // Initialize Passport
 
@@ -34,28 +35,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 mongoose.set("strictQuery", false);
 
-async function populateNameMap() {
-    let users = await User.find({});
-    for (let user of users) {
-        if (nameMap[user._id]) {
-            continue;
-        }
-        nameMap[user._id] = { name: user.name, description: user.description };
-        console.log(user.name + " added to Cache.");
-    }
-}
-
-async function getName(res, id) {
-    if (!nameMap[id]) {
-        console.log("Accessing DB for Name");
-        let user = await User.findById(id);
-        if (!user) {
-            return res.status(403).json({ msg: "Failed - Invalid ID" });
-        }
-        nameMap[id] = user.name;
-    }
-    return res.json({ name: nameMap[id].name });
-}
+app.use("/auth", auth); // Routing
 
 app.get("/getName", checkUnauthenticated, (req, res) => {
     if (!req.user || !req.user._id) {
@@ -117,65 +97,32 @@ app.get("/users", async (req, res) => {
     res.json(out);
 });
 
-app.post("/register", async (req, res) => {
-    const inputs = req.body;
-    if (!inputs || !inputs.username || !inputs.password) {
-        return res.status(403).json({ msg: "Failed - Something went wrong" });
-    }
-    if (inputs.password.length < 5) {
-        return res.status(403).json({ msg: "Failed - Password must be at least 5 characters." });
-    }
-    if (inputs.username.length < 3 || inputs.username.length > 15) {
-        return res.status(403).json({ msg: "Failed - Username must be at least 3 characters and less than 16." });
-    }
+/* Cache */
 
-    if (filter.isProfane(inputs.username)) {
-        return res.status(403).json({ msg: "Failed - Username is profane." });
-    }
-
-    inputs.username = inputs.username.toLowerCase();
-    let nameAlreadyUsed = await User.findOne({ name: inputs.username });
-    if (nameAlreadyUsed !== null) {
-        return res.status(503).json({ msg: "Failed - Name Taken", status: 503 });
-    }
-
-    const hash = bcrypt.hashSync(inputs.password, SALT_ROUNDS);
-    await User.insertMany({
-        name: inputs.username,
-        password: hash,
-        description: "T.B.D."
-    });
-
-    let user = await User.find({ name: inputs.username });
-    nameMap[user._id] = { name: user.name, description: user.description };
-
-    res.redirect("/login.html");
-});
-
-app.post("/login", checkAuthenticated, (req, res) => {
-    passport.authenticate('local', { session: true }, function (err, user, info) {
-        if (!user) {
-            console.log("Failure");
-            return res.json(info);
+async function populateNameMap() {
+    let users = await User.find({});
+    for (let user of users) {
+        if (nameMap[user._id]) {
+            continue;
         }
-        req.logIn(user, function (err) {
-            if (err) { throw err; }
-            // session saved
-            res.json(info);
-        });
-    })(req, res);
-});
+        nameMap[user._id] = { name: user.name, description: user.description };
+        console.log(user.name + " added to Cache.");
+    }
+}
+
+async function getName(res, id) {
+    if (!nameMap[id]) {
+        console.log("Accessing DB for Name");
+        let user = await User.findById(id);
+        if (!user) {
+            return res.status(403).json({ msg: "Failed - Invalid ID" });
+        }
+        nameMap[id] = user.name;
+    }
+    return res.json({ name: nameMap[id].name });
+}
 
 /* AUTHENTICATION */
-
-async function checkAuthenticated(req, res, next) {
-    if (req.user && req.user._id) {
-        // const user = await User.findById(req.user._id);
-        // if (user)
-        return res.redirect("/moo.html");
-    }
-    next();
-}
 
 async function checkUnauthenticated(req, res, next) {
     if (req.user && req.user._id) {
