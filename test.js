@@ -16,7 +16,10 @@ async function connectToDB() {
         await mongoose.connect(`mongodb+srv://emperorbob:${process.env.PASSWORD}@cluster0.d100l.mongodb.net/myDB?retryWrites=true&w=majority`);
         console.log("connected");
 
-        await User.updateMany({}, { description: "T.B.D." });
+        await User.updateMany({}, {following: [], followed: []});
+        // let user = await User.findById("6493800501f3d23ae4735bbb");
+        // user.following.push("6493df8cd01b6317b7add092");
+        // user.save();
         console.log("DONE");
     } catch (e) {
         console.log(e.message);

@@ -1,25 +1,31 @@
+body {
+    display: grid;
+    /* grid-template-areas: "moo"; */
+}
+
 form {
     position: relative;
+    height: 100%;
 }
 
 #characterLimit {
     color: var(--green);
     position: absolute;
     font-size: 80%;
-    right: 6%;
-    bottom: 19%;
+    right: 8%;
+    bottom: 32%;
     font-weight: bold;
 }
 
 textarea {
-    width: 35vw;
-    height: 50vh;
-    font-size: 120%;
+    width: 40vw;
+    height: 60%;
+    font-size: 100%;
     padding: 1%;
     resize: none;
     background-color: transparent;
     color: white;
-    border: 2px solid white;
+    border: 2px solid var(--bright);
 }
 
 textarea:focus {
@@ -32,4 +38,8 @@ textarea:focus {
 
 #characterLimit.medium {
     color: yellow;
+}
+
+#main {
+    height: 30vh;
 }

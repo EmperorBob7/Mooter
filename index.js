@@ -22,7 +22,7 @@ const app = express();
 require("./passport-config.js")(passport); // Initialize Passport
 
 const PORT = process.env.PORT || 3030;
-let currentMoos = [], newMoo = true, nameMap = {};
+let nameMap = {};
 
 app.use(express.static("public"));
 app.use(express.json({ limit: "1mb" }));
@@ -47,15 +47,19 @@ mongoose.set("strictQuery", false);
 
 app.use("/auth", auth); // Routing
 
+app.get("/", (req, res) => {
+    res.redirect("./register.html");
+});
+
 app.get("/getName", checkUnauthenticated, (req, res) => {
     if (!req.user || !req.user._id) {
         return res.status(403).json({ msg: "Failed - Something went wrong." });
     }
-    getName(res, req.user._id);
+    return res.json({ name: req.user.name });
+    // getName(res, req.user._id);
 });
 
 app.get("/getName/:id", (req, res) => {
-    console.log(req.params);
     if (!req.params.id) {
         return res.status(403).json({ msg: "Failed - Invalid ID" });
     }
@@ -73,12 +77,15 @@ app.get("/moos/:id", async (req, res) => {
     res.json(await Moo.find({ poster: req.params.id }));
 });
 
+// Get moos of people one is following
 app.get("/moos", checkUnauthenticated, async (req, res) => {
-    if (newMoo) {
-        newMoo = false;
-        currentMoos = await Moo.find({});
+    let following = (await User.findById(req.user._id)).following;
+    let retArr = [await Moo.findById("64a97ec9439c0ebb0c8d5684")]; // ADMIN MOO
+    for (let userID of following) {
+        let moos = await Moo.find({ poster: userID });
+        retArr = retArr.concat(moos);
     }
-    res.json(currentMoos);
+    res.json(retArr);
 });
 
 app.post("/moo", checkUnauthenticated, async (req, res) => {
@@ -97,8 +104,38 @@ app.post("/moo", checkUnauthenticated, async (req, res) => {
         description: filter.clean(req.body.description),
         date: Date.now()
     });
-    newMoo = true;
     return res.status(200).json({ msg: "Success" });
+});
+
+app.get("/isFollowing/:id", checkUnauthenticated, async (req, res) => {
+    let userID = req.params.id;
+    let user = await User.findById(req.user._id);
+    let following = user.following;
+    if (following.includes(userID)) {
+        return res.json({ msg: "Following", following: true });
+    }
+    return res.json({ msg: "Not Following", following: false });
+});
+
+app.get("/follow/:id", checkUnauthenticated, async (req, res) => {
+    let userToFollow = req.params.id;
+    let userFollowing = req.user._id;
+    let otherUser = await User.findById(userToFollow);
+    if (!otherUser) {
+        return res.status(200).json({ msg: "Invalid User ID", success: false});
+    }
+
+    let user = await User.findById(userFollowing);
+    if (!user.following.includes(userToFollow)) {
+        user.following.push(userToFollow);
+        await user.save();
+    }
+
+    if (!otherUser.followed.includes(userFollowing)) {
+        otherUser.followed.push(userFollowing);
+        await otherUser.save();
+    }
+    res.json({ msg: "Success", success: true});
 });
 
 app.get("/users", async (req, res) => {
@@ -116,13 +153,11 @@ async function populateNameMap() {
             continue;
         }
         addName(user.name, user._id, user.description);
-        console.log(user.name + " added to Cache.");
     }
 }
 
 async function getName(res, id) {
     if (!nameMap[id]) {
-        console.log("Accessing DB for Name");
         let user = await User.findById(id);
         if (!user) {
             return res.status(403).json({ msg: "Failed - Invalid ID" });
@@ -140,8 +175,6 @@ function addName(name, id, desc) {
 
 async function checkUnauthenticated(req, res, next) {
     if (req.user && req.user._id) {
-        // const user = await User.findById(req.user._id);
-        // if (user)
         return next();
     }
     res.redirect("/login.html");

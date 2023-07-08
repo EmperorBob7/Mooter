@@ -1,10 +1,29 @@
-window.onload = async () => {
+let followButton, id;
+
+async function userpageLoad() {
     const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
+    id = urlParams.get('id');
+    followButton = document.getElementById("follow");
     loadMoos(id);
 }
 
-async function loadMoos(id) {
+async function followingUser() {
+    let isFollowing = await fetch(`/isFollowing/${id}`, { method: "GET" });
+    isFollowing = (await isFollowing.json()).following;
+    console.log(isFollowing);
+    if (isFollowing) {
+        followButton.classList.add("following");
+        followButton.innerText = "Followed"
+    } else {
+        followButton.classList.remove("following");
+        followButton.innerText = "Follow"
+    }
+}
+
+async function loadMoos(newId) {
+    id = newId;
+    followingUser();
+
     let name = await fetch(`/getName/${id}`, { method: "GET" });
     name = await name.json();
     name = name.name;
@@ -12,7 +31,7 @@ async function loadMoos(id) {
 
     let moos = await fetch(`/moos/${id}`, { method: "GET" });
     moos = await moos.json();
-    console.log(name, moos);
+    moos = moos.sort((a, b) => b.date - a.date);
 
     for (let moo of moos) {
         moo.poster = name;
@@ -25,7 +44,7 @@ function drawGUI(moos) {
     while (list.firstChild) {
         list.removeChild(list.lastChild);
     }
-    
+
     for (let moo of moos) {
         let mooBox = document.createElement("div");
         mooBox.classList.add("mooBox");
@@ -46,5 +65,16 @@ function drawGUI(moos) {
         mooBox.appendChild(desc);
         mooBox.appendChild(date);
         list.appendChild(mooBox);
+    }
+}
+userpageLoad();
+
+async function followUser() {
+    let request = await fetch(`/follow/${id}`, { method: "GET" });
+    request = await request.json();
+    if (request.success) {
+        followingUser();
+    } else {
+        alert(request.msg);
     }
 }

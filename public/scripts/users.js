@@ -5,7 +5,7 @@ async function loadUsers() {
     let userAside = document.getElementById("listUsers");
     let templateURL = "/userpage.html?id=*";
     if(window.location.pathname == "/userpage.html") {
-        templateURL = `javascript: loadMoos("*")`; // Efficiency
+        templateURL = `javascript: updateUser("*")`; // Efficiency
     }
 
     for (let user of data) {
@@ -31,6 +31,11 @@ async function loadUsers() {
         userAside.appendChild(container);
     }
     console.log(data);
+}
+
+function updateUser(id) {
+    window.history.replaceState(null, null, `?id=${id}`);
+    loadMoos(id);
 }
 
 loadUsers();

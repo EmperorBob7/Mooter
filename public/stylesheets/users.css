@@ -1,21 +1,32 @@
 body {
     display: grid;
-    grid-template-areas: ". main users";
-    column-gap: 2vw;
+    grid-template-areas: "profile main users"
+                         "profile view users";
+    column-gap: 0;
+    row-gap: 0;
 }
 
-main {
+#main {
     grid-area: main;
+    width: 50vw;
 }
 
-aside {
-    grid-area: users;
+#view {
+    width: 50vw;
+}
+
+#profile {
     width: 20vw;
 }
 
+#users {
+    grid-area: users;
+    width: 25vw;
+    height: 100vh;
+}
+
 #usersContainer {
-    overflow: hidden;
-    height: 90%;
+    height: 100%;
     margin-top: 2.5vh;
 }
 
@@ -25,12 +36,17 @@ aside {
     text-align: left;
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 100%;
+    height: 90%;
 }
 
 #listUsers a {
     color: var(--bright);
     text-decoration: none;
+}
+
+#listUsers:last-child {
+    color: red !important;
+    /* margin-bottom: 200px; */
 }
 
 .userBox {

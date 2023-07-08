@@ -1,0 +1,9 @@
+#profile {
+    grid-area: profile;
+    width: 25vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 5vh;
+    /* align-content: stretch; */
+}

@@ -1,16 +1,11 @@
-window.onload = async () => {
+async function view() {
     let data = await fetch("/moos", { method: "GET" });
     data = await data.json();
+    data = data.sort((a, b) => b.date - a.date);
 
     let names = await fetch("/getAllNames", { method: "GET" });
     let idNameMap = await names.json();
     for (let moo of data) {
-        // if (idNameMap[moo.poster] === undefined) {
-        //     let name = await fetch(`/getName/${moo.poster}`, { method: "GET" });
-        //     name = await name.json();
-        //     name = name.name;
-        //     idNameMap[moo.poster] = name;
-        // }
         moo.poster = idNameMap[moo.poster].name;
     }
     drawGUI(data);
@@ -39,3 +34,5 @@ function drawGUI(moos) {
         document.getElementById("contentContainer").appendChild(mooBox);
     }
 }
+
+view();

@@ -34,7 +34,9 @@ router.post("/register", async (req, res) => {
     await User.insertMany({
         name: inputs.username,
         password: hash,
-        description: "T.B.D."
+        description: "T.B.D.",
+        following: [],
+        followed: []
     });
 
     let user = await User.find({ name: inputs.username });

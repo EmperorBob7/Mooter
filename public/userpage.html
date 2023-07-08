@@ -7,29 +7,41 @@
     <title>Viewing User</title>
     <link rel="stylesheet" href="./stylesheets/styles.css">
     <link rel="stylesheet" href="./stylesheets/users.css">
-    <link rel="stylesheet" href="./stylesheets/userpage.css">
     <link rel="stylesheet" href="./stylesheets/view.css">
+    <link rel="stylesheet" href="./stylesheets/profile.css">
+    <link rel="stylesheet" href="./stylesheets/moo.css">
+    <link rel="stylesheet" href="./stylesheets/userpage.css">
 </head>
 
 <body>
-    <main>
+    <aside id="profile">
+        <h2><a href="./moo.html">Home</a></h2>
+        <h2>Profile</h2>
+        <h2>Friends</h2>
+        <h2>Settings</h2>
+        <h4>Logged in as <span id="name"></span></h4>
+    </aside>
+
+    <main id="view">
         <h3 id="viewingHeader">Viewing _</h3>
-        <hr />
+        <button id="follow" onclick="followUser()">Follow</button>
+        <br/>
         <div id="contentContainer">
             <div id="contentList"></div>
         </div>
     </main>
 
-    <aside>
+    <aside id="users">
         <h3>Users</h3>
-        <hr>
         <div id="usersContainer">
             <div id="listUsers"></div>
         </div>
+        <!--Remember to import users.js-->
     </aside>
     <!-- your content here... -->
     <script src="./scripts/userpage.js"></script>
     <script src="./scripts/users.js"></script>
+    <script src="./scripts/moo.js"></script>
 </body>
 
 </html>

@@ -6,21 +6,29 @@
     --green: #02c9ab;
 }
 
-main {
-    height: fit-content;
+#view {
+    grid-area: view;
+    height: 70vh;
+    overflow-y: scroll;
+    /* margin: auto; */
+}
+
+#view::-webkit-scrollbar {
+    display: none;
 }
 
 .mooBox {
     background-color: var(--dark);
-    margin: 4%;
+    margin: 0;
     padding: 2% 1% 0% 2%;
     display: grid;
     grid-template-columns: 1fr 4fr;
     grid-template-rows: 1fr auto 1fr;
     grid-template-areas: "name name"
-                   "desc desc"
-                   ". dat";
-    width: 35vw;
+        "desc desc"
+        ". dat";
+    width: 100%;
+    box-sizing: border-box;
     height: min-content;
     border: 1px solid var(--bright);
 }

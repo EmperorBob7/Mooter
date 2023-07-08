@@ -1,15 +1,31 @@
-#contentContainer {
-    overflow: hidden;
-    display: block;
-    height: 100vh;
-    margin-top: 2.5vh;
+body {
+    display: grid;
+    grid-template-areas: "profile view users"
+                         "profile view users";
+    column-gap: 0;
+    row-gap: 0;
 }
 
-#contentList {
-    width: 100%;
-    margin: auto;
-    text-align: left;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    height: 72%;
+#view {
+    grid-area: view;
+    height: 100vh;
+    position: relative;
+}
+
+#follow {
+    background-color: var(--green);
+    font-weight: bold;
+    display: inline;
+    margin-bottom: 1vh;
+    position: absolute;
+    width: 7vw;
+    right: 5%;
+}
+
+#viewingHeader {
+    display: inline;
+}
+
+#follow.following {
+    background-color: var(--bright);
 }

@@ -1,4 +1,4 @@
-window.onload = () => {
+function floatLoad() {
     const floatFields = document.querySelectorAll('.float-field');
     floatFields.forEach((element) => {
         if (element.value) {
@@ -23,3 +23,5 @@ function handleBlur(e) {
     }
     target.parentNode.classList.remove('active-color');
 }
+
+floatLoad();
