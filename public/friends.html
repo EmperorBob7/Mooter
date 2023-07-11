@@ -1,17 +1,15 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Mooter</title>
+    <title>Viewing Friends</title>
     <link rel="stylesheet" href="./stylesheets/styles.css">
-    <link rel="stylesheet" href="./stylesheets/moo.css">
     <link rel="stylesheet" href="./stylesheets/users.css">
     <link rel="stylesheet" href="./stylesheets/view.css">
     <link rel="stylesheet" href="./stylesheets/profile.css">
+    <link rel="stylesheet" href="./stylesheets/userpage.css">
 </head>
 
 <body>
@@ -23,20 +21,12 @@
         <h4>Logged in as <span id="name"></span></h4>
     </aside>
 
-    <main id="main">
-        <form action="javascript:submitForm()">
-            <span id="characterLimit">250</span>
-            <textarea type="text" id="description" name="description" oninput="updateLimit()" maxlength="250"
-                placeholder="Type here..."></textarea>
-            <button id="submitMoot">Submit</button>
-        </form>
-        <!--Remember to import moo.js-->
+    <main id="view">
+        <h3 id="viewingHeader">Viewing Your Followers</h3>
+        <div id="contentContainer">
+            <div id="contentList"></div>
+        </div>
     </main>
-
-    <section id="view">
-        <div id="contentContainer"></div>
-        <!--Remember to import view.js-->
-    </section>
 
     <aside id="users">
         <h3>Users</h3>
@@ -46,9 +36,7 @@
         <!--Remember to import users.js-->
     </aside>
     <!-- your content here... -->
-    <script src="./scripts/moo.js"></script>
     <script src="./scripts/users.js"></script>
-    <script src="./scripts/view.js"></script>
 </body>
 
 </html>

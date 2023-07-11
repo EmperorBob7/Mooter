@@ -60,7 +60,7 @@ app.get("/getName", checkUnauthenticated, (req, res) => {
 });
 
 app.get("/getName/:id", (req, res) => {
-    if (!req.params.id) {
+    if (!req.params || req.params.id == null || !mongoose.isValidObjectId(req.params.id)) {
         return res.status(403).json({ msg: "Failed - Invalid ID" });
     }
     getName(res, req.params.id);
@@ -71,7 +71,7 @@ app.get("/getAllNames", (req, res) => {
 });
 
 app.get("/moos/:id", async (req, res) => {
-    if (!req.params.id) {
+    if (!req.params.id || !mongoose.isValidObjectId(req.params.id)) {
         return res.status(403).json({ msg: "Failed - Invalid ID" });
     }
     res.json(await Moo.find({ poster: req.params.id }));
@@ -108,6 +108,9 @@ app.post("/moo", checkUnauthenticated, async (req, res) => {
 });
 
 app.get("/isFollowing/:id", checkUnauthenticated, async (req, res) => {
+    if (!req.params || !req.params.id || !mongoose.isValidObjectId(req.params.id)) {
+        return res.status(403).json({ msg: "Failed - Invalid ID" });
+    }
     let userID = req.params.id;
     let user = await User.findById(req.user._id);
     let following = user.following;
@@ -118,6 +121,9 @@ app.get("/isFollowing/:id", checkUnauthenticated, async (req, res) => {
 });
 
 app.get("/follow/:id", checkUnauthenticated, async (req, res) => {
+    if (!req.params || !req.params.id || !mongoose.isValidObjectId(req.params.id)) {
+        return res.status(403).json({ msg: "Failed - Invalid ID" });
+    }
     let userToFollow = req.params.id;
     let userFollowing = req.user._id;
     let otherUser = await User.findById(userToFollow);
