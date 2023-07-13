@@ -56,7 +56,6 @@ app.get("/getName", checkUnauthenticated, (req, res) => {
         return res.status(403).json({ msg: "Failed - Something went wrong." });
     }
     return res.json({ name: req.user.name });
-    // getName(res, req.user._id);
 });
 
 app.get("/getName/:id", (req, res) => {
@@ -128,7 +127,7 @@ app.get("/follow/:id", checkUnauthenticated, async (req, res) => {
     let userFollowing = req.user._id;
     let otherUser = await User.findById(userToFollow);
     if (!otherUser) {
-        return res.status(200).json({ msg: "Invalid User ID", success: false});
+        return res.status(200).json({ msg: "Invalid User ID", success: false });
     }
 
     let user = await User.findById(userFollowing);
@@ -141,7 +140,27 @@ app.get("/follow/:id", checkUnauthenticated, async (req, res) => {
         otherUser.followed.push(userFollowing);
         await otherUser.save();
     }
-    res.json({ msg: "Success", success: true});
+    res.json({ msg: "Success", success: true });
+});
+
+app.get("/getFollowing", checkUnauthenticated, async (req, res) => {
+    let user = await User.findById(req.user._id);
+    let retArr = user.following.map(async (f) => {
+        let other = await User.findById(f);
+        return [other.name, other._id, other.description];
+    });
+    retArr = await Promise.all(retArr);
+    res.json(retArr);
+});
+
+app.get("/getFollowers", checkUnauthenticated, async (req, res) => {
+    let user = await User.findById(req.user._id);
+    let retArr = user.followed.map(async (f) => {
+        let other = await User.findById(f);
+        return [other.name, other._id, other.description];
+    });
+    retArr = await Promise.all(retArr);
+    res.json(retArr);
 });
 
 app.get("/users", async (req, res) => {

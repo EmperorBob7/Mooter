@@ -7,9 +7,9 @@
     <title>Viewing Friends</title>
     <link rel="stylesheet" href="./stylesheets/styles.css">
     <link rel="stylesheet" href="./stylesheets/users.css">
-    <link rel="stylesheet" href="./stylesheets/view.css">
     <link rel="stylesheet" href="./stylesheets/profile.css">
     <link rel="stylesheet" href="./stylesheets/userpage.css">
+    <link rel="stylesheet" href="./stylesheets/friends.css">
 </head>
 
 <body>
@@ -22,9 +22,12 @@
     </aside>
 
     <main id="view">
-        <h3 id="viewingHeader">Viewing Your Followers</h3>
         <div id="contentContainer">
-            <div id="contentList"></div>
+            <h3>Following</h3>
+            <div id="followingList" class="contentList"></div>
+            <hr style="margin: 10px;"/>
+            <h3>Followers</h3>
+            <div id="followersList" class="contentList"></div>
         </div>
     </main>
 
@@ -37,6 +40,7 @@
     </aside>
     <!-- your content here... -->
     <script src="./scripts/users.js"></script>
+    <script src="./scripts/friends.js"></script>
 </body>
 
 </html>

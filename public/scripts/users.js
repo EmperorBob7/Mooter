@@ -1,10 +1,6 @@
-async function loadUsers() {
-    let res = await fetch("/users", { method: "GET" });
-    let data = await res.json(); // [name, id, description]
-
-    let userAside = document.getElementById("listUsers");
+async function loadUsers(data, superParent) {
     let templateURL = "/userpage.html?id=*";
-    if(window.location.pathname == "/userpage.html") {
+    if (window.location.pathname == "/userpage.html") {
         templateURL = `javascript: updateUser("*")`; // Efficiency
     }
 
@@ -28,7 +24,7 @@ async function loadUsers() {
         container.appendChild(pfp);
         container.appendChild(name);
         container.appendChild(desc);
-        userAside.appendChild(container);
+        superParent.appendChild(container);
     }
     console.log(data);
 }
@@ -38,4 +34,10 @@ function updateUser(id) {
     loadMoos(id);
 }
 
-loadUsers();
+async function userBar() {
+    let res = await fetch("/users", { method: "GET" });
+    let data = await res.json(); // [name, id, description]
+    let userAside = document.getElementById("listUsers");
+    loadUsers(data, userAside);
+}
+userBar();

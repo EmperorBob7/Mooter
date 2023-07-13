@@ -73,6 +73,13 @@ body {
     grid-area: name;
     text-align: left;
     font-size: 80%;
+    overflow-x: scroll;
+    white-space: nowrap;
+    text-overflow: clip;
+}
+
+.boxName::-webkit-scrollbar {
+    display: none;
 }
 
 .boxDesc {

@@ -1,0 +1,17 @@
+.contentList {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    text-align: left;
+    justify-content: left;
+
+    .userBox {
+        width: 40%;
+        margin: auto;
+    }
+}
+
+.contentList a {
+    color: var(--bright);
+    text-decoration: none;
+}
