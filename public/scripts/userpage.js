@@ -8,7 +8,7 @@ async function userpageLoad() {
 }
 
 async function followingUser() {
-    let isFollowing = await fetch(`/isFollowing/${id}`, { method: "GET" });
+    let isFollowing = await fetch(`/followInfo/isFollowing/${id}`, { method: "GET" });
     isFollowing = (await isFollowing.json()).following;
     console.log(isFollowing);
     if (isFollowing) {
@@ -70,7 +70,7 @@ function drawGUI(moos) {
 userpageLoad();
 
 async function followUser() {
-    let request = await fetch(`/follow/${id}`, { method: "GET" });
+    let request = await fetch(`/followInfo/follow/${id}`, { method: "GET" });
     request = await request.json();
     if (request.success) {
         followingUser();

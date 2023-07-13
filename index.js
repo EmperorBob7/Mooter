@@ -17,9 +17,13 @@ const passport = require("passport");
 // Personal Files
 const User = require("./schemas/user.js");
 const Moo = require("./schemas/moo.js");
-const auth = require("./auth/auth.js");
+const auth = require("./routing/auth.js");
+const followingRoute = require("./routing/following.js");
 const app = express();
-require("./passport-config.js")(passport); // Initialize Passport
+
+const passportConfig = require("./passport-config.js");
+const checkUnauthenticated = passportConfig.checkUnauthenticated;
+passportConfig.initialize(passport); // Initialize Passport
 
 const PORT = process.env.PORT || 3030;
 let nameMap = {};
@@ -46,9 +50,17 @@ app.use(rateLimit({
 mongoose.set("strictQuery", false);
 
 app.use("/auth", auth); // Routing
+app.use("/followInfo", followingRoute); // Routing
 
 app.get("/", (req, res) => {
     res.redirect("./register.html");
+});
+
+app.get("/getID", checkUnauthenticated, (req, res) => {
+    if (!req.user || !req.user._id) {
+        return res.status(403).json({ msg: "Failed - Something went wrong." });
+    }
+    return res.json({ id: req.user._id });
 });
 
 app.get("/getName", checkUnauthenticated, (req, res) => {
@@ -106,62 +118,62 @@ app.post("/moo", checkUnauthenticated, async (req, res) => {
     return res.status(200).json({ msg: "Success" });
 });
 
-app.get("/isFollowing/:id", checkUnauthenticated, async (req, res) => {
-    if (!req.params || !req.params.id || !mongoose.isValidObjectId(req.params.id)) {
-        return res.status(403).json({ msg: "Failed - Invalid ID" });
-    }
-    let userID = req.params.id;
-    let user = await User.findById(req.user._id);
-    let following = user.following;
-    if (following.includes(userID)) {
-        return res.json({ msg: "Following", following: true });
-    }
-    return res.json({ msg: "Not Following", following: false });
-});
+// app.get("/isFollowing/:id", checkUnauthenticated, async (req, res) => {
+//     if (!req.params || !req.params.id || !mongoose.isValidObjectId(req.params.id)) {
+//         return res.status(403).json({ msg: "Failed - Invalid ID" });
+//     }
+//     let userID = req.params.id;
+//     let user = await User.findById(req.user._id);
+//     let following = user.following;
+//     if (following.includes(userID)) {
+//         return res.json({ msg: "Following", following: true });
+//     }
+//     return res.json({ msg: "Not Following", following: false });
+// });
 
-app.get("/follow/:id", checkUnauthenticated, async (req, res) => {
-    if (!req.params || !req.params.id || !mongoose.isValidObjectId(req.params.id)) {
-        return res.status(403).json({ msg: "Failed - Invalid ID" });
-    }
-    let userToFollow = req.params.id;
-    let userFollowing = req.user._id;
-    let otherUser = await User.findById(userToFollow);
-    if (!otherUser) {
-        return res.status(200).json({ msg: "Invalid User ID", success: false });
-    }
+// app.get("/follow/:id", checkUnauthenticated, async (req, res) => {
+//     if (!req.params || !req.params.id || !mongoose.isValidObjectId(req.params.id)) {
+//         return res.status(403).json({ msg: "Failed - Invalid ID" });
+//     }
+//     let userToFollow = req.params.id;
+//     let userFollowing = req.user._id;
+//     let otherUser = await User.findById(userToFollow);
+//     if (!otherUser) {
+//         return res.status(200).json({ msg: "Invalid User ID", success: false });
+//     }
 
-    let user = await User.findById(userFollowing);
-    if (!user.following.includes(userToFollow)) {
-        user.following.push(userToFollow);
-        await user.save();
-    }
+//     let user = await User.findById(userFollowing);
+//     if (!user.following.includes(userToFollow)) {
+//         user.following.push(userToFollow);
+//         await user.save();
+//     }
 
-    if (!otherUser.followed.includes(userFollowing)) {
-        otherUser.followed.push(userFollowing);
-        await otherUser.save();
-    }
-    res.json({ msg: "Success", success: true });
-});
+//     if (!otherUser.followed.includes(userFollowing)) {
+//         otherUser.followed.push(userFollowing);
+//         await otherUser.save();
+//     }
+//     res.json({ msg: "Success", success: true });
+// });
 
-app.get("/getFollowing", checkUnauthenticated, async (req, res) => {
-    let user = await User.findById(req.user._id);
-    let retArr = user.following.map(async (f) => {
-        let other = await User.findById(f);
-        return [other.name, other._id, other.description];
-    });
-    retArr = await Promise.all(retArr);
-    res.json(retArr);
-});
+// app.get("/getFollowing", checkUnauthenticated, async (req, res) => {
+//     let user = await User.findById(req.user._id);
+//     let retArr = user.following.map(async (f) => {
+//         let other = await User.findById(f);
+//         return [other.name, other._id, other.description];
+//     });
+//     retArr = await Promise.all(retArr);
+//     res.json(retArr);
+// });
 
-app.get("/getFollowers", checkUnauthenticated, async (req, res) => {
-    let user = await User.findById(req.user._id);
-    let retArr = user.followed.map(async (f) => {
-        let other = await User.findById(f);
-        return [other.name, other._id, other.description];
-    });
-    retArr = await Promise.all(retArr);
-    res.json(retArr);
-});
+// app.get("/getFollowers", checkUnauthenticated, async (req, res) => {
+//     let user = await User.findById(req.user._id);
+//     let retArr = user.followed.map(async (f) => {
+//         let other = await User.findById(f);
+//         return [other.name, other._id, other.description];
+//     });
+//     retArr = await Promise.all(retArr);
+//     res.json(retArr);
+// });
 
 app.get("/users", async (req, res) => {
     let out = await User.find({});
@@ -194,15 +206,6 @@ async function getName(res, id) {
 
 function addName(name, id, desc) {
     nameMap[id] = { name: name, description: desc };
-}
-
-/* AUTHENTICATION */
-
-async function checkUnauthenticated(req, res, next) {
-    if (req.user && req.user._id) {
-        return next();
-    }
-    res.redirect("/login.html");
 }
 
 /* DATABASE + PORT BELOW */

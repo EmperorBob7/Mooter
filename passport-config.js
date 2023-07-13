@@ -27,4 +27,12 @@ function initialize(passport) {
     });
 }
 
-module.exports = initialize;
+async function checkUnauthenticated(req, res, next) {
+    if (req.user && req.user._id) {
+        return next();
+    }
+    res.redirect("/login.html");
+}
+
+module.exports.checkUnauthenticated = checkUnauthenticated;
+module.exports.initialize = initialize;

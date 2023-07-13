@@ -1,5 +1,5 @@
 async function getFollowing() {
-    let following = await fetch("/getFollowing", { method: "GET" });
+    let following = await fetch("/followInfo/getFollowing", { method: "GET" });
     following = await following.json();
 
     let container = document.getElementById("followingList");
@@ -7,7 +7,7 @@ async function getFollowing() {
 }
 
 async function getFollowers() {
-    let followers = await fetch("/getFollowers", { method: "GET" });
+    let followers = await fetch("/followInfo/getFollowers", { method: "GET" });
     followers = await followers.json();
 
     let container = document.getElementById("followersList");
