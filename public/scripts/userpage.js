@@ -14,9 +14,13 @@ async function followingUser() {
     if (isFollowing) {
         followButton.classList.add("following");
         followButton.innerText = "Followed"
+        followButton.removeEventListener("click", followUser);
+        followButton.addEventListener("click", unfollowUser);
     } else {
         followButton.classList.remove("following");
-        followButton.innerText = "Follow"
+        followButton.innerText = "Follow";
+        followButton.removeEventListener("click", unfollowUser);
+        followButton.addEventListener("click", followUser);
     }
 }
 
@@ -71,6 +75,16 @@ userpageLoad();
 
 async function followUser() {
     let request = await fetch(`/followInfo/follow/${id}`, { method: "GET" });
+    request = await request.json();
+    if (request.success) {
+        followingUser();
+    } else {
+        alert(request.msg);
+    }
+}
+
+async function unfollowUser() {
+    let request = await fetch(`/followInfo/unfollow/${id}`, { method: "GET" });
     request = await request.json();
     if (request.success) {
         followingUser();

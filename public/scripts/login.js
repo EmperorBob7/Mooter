@@ -20,5 +20,4 @@ async function submitForm() {
     } else {
         window.location = "/moo.html";
     }
-    console.log(res);
 }

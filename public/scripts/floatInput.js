@@ -10,7 +10,6 @@ function floatLoad() {
 }
 
 function handleFocus(e) {
-    console.log("FOCUS");
     const target = e.target;
     target.parentNode.classList.add('active');
     target.parentNode.classList.add('active-color');

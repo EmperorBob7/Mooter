@@ -9,10 +9,11 @@ router.get("/isFollowing/:id", checkUnauthenticated, async (req, res) => {
     if (!req.params || !req.params.id || !mongoose.isValidObjectId(req.params.id)) {
         return res.status(403).json({ msg: "Failed - Invalid ID" });
     }
+    
     let userID = req.params.id;
     let user = await User.findById(req.user._id);
     let following = user.following;
-    if (following.includes(userID)) {
+    if (following.includes(userID)) { // Following that User
         return res.json({ msg: "Following", following: true });
     }
     return res.json({ msg: "Not Following", following: false });
@@ -22,23 +23,50 @@ router.get("/follow/:id", checkUnauthenticated, async (req, res) => {
     if (!req.params || !req.params.id || !mongoose.isValidObjectId(req.params.id)) {
         return res.status(403).json({ msg: "Failed - Invalid ID" });
     }
-    let userToFollow = req.params.id;
-    let userFollowing = req.user._id;
-    let otherUser = await User.findById(userToFollow);
+    let myUserID = req.user._id + "";
+    let otherID = req.params.id;
+    let otherUser = await User.findById(otherID);
     if (!otherUser) {
         return res.status(200).json({ msg: "Invalid User ID", success: false });
     }
 
-    let user = await User.findById(userFollowing);
-    if (!user.following.includes(userToFollow)) {
-        user.following.push(userToFollow);
+    if (!otherUser.followed.includes(myUserID)) { // Not Followed
+        otherUser.followed.push(myUserID); // Update List
+        await otherUser.save();
+    }
+
+    let user = await User.findById(myUserID);
+    if (!user.following.includes(otherID)) { // Not Following
+        user.following.push(otherID); // Update List
+        await user.save();
+    }
+    res.json({ msg: "Success", success: true });
+});
+
+router.get("/unfollow/:id", checkUnauthenticated, async (req, res) => {
+    if (!req.params || !req.params.id || !mongoose.isValidObjectId(req.params.id)) {
+        return res.status(403).json({ msg: "Failed - Invalid ID" });
+    }
+    let myUserID = req.user._id;
+    let otherID = req.params.id;
+    let otherUser = await User.findById(otherID);
+    if (!otherUser) {
+        return res.status(200).json({ msg: "Invalid User ID", success: false });
+    }
+
+    let userIndex = otherUser.followed.indexOf(myUserID);
+    if(userIndex != -1) { // Is Followed
+        otherUser.followed.splice(userIndex, 1); // Remove Element
+        await otherUser.save();
+    }
+
+    let user = await User.findById(myUserID);
+    userIndex = user.following.indexOf(otherID);
+    if(userIndex != -1) { // Is Following
+        user.following.splice(userIndex, 1); // Remove Element
         await user.save();
     }
 
-    if (!otherUser.followed.includes(userFollowing)) {
-        otherUser.followed.push(userFollowing);
-        await otherUser.save();
-    }
     res.json({ msg: "Success", success: true });
 });
 

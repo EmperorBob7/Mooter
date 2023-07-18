@@ -26,7 +26,6 @@ async function loadUsers(data, superParent) {
         container.appendChild(desc);
         superParent.appendChild(container);
     }
-    console.log(data);
 }
 
 function updateUser(id) {
