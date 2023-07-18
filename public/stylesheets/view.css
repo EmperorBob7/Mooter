@@ -10,7 +10,8 @@
     grid-area: view;
     height: 70vh;
     overflow-y: scroll;
-    /* margin: auto; */
+    padding: 0;
+    /* border: 0; */
 }
 
 #view::-webkit-scrollbar {

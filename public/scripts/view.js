@@ -1,9 +1,9 @@
 async function view() {
-    let data = await fetch("/moos", { method: "GET" });
+    let data = await fetch("/moos");
     data = await data.json();
     data = data.sort((a, b) => b.date - a.date);
 
-    let names = await fetch("/getAllNames", { method: "GET" });
+    let names = await fetch("/getAllNames");
     let idNameMap = await names.json();
     for (let moo of data) {
         moo.poster = idNameMap[moo.poster].name;

@@ -8,7 +8,7 @@ async function userpageLoad() {
 }
 
 async function followingUser() {
-    let isFollowing = await fetch(`/followInfo/isFollowing/${id}`, { method: "GET" });
+    let isFollowing = await fetch(`/followInfo/isFollowing/${id}`);
     isFollowing = (await isFollowing.json()).following;
     console.log(isFollowing);
     if (isFollowing) {
@@ -27,12 +27,12 @@ async function followingUser() {
 async function loadMoos(newId) {
     id = newId;
     followingUser();
-    let name = await fetch(`/getName/${id}`, { method: "GET" });
+    let name = await fetch(`/getName/${id}`);
     name = await name.json();
     name = name.name;
     document.getElementById("viewingHeader").innerText = `Viewing ${name}`;
 
-    let moos = await fetch(`/moos/${id}`, { method: "GET" });
+    let moos = await fetch(`/moos/${id}`);
     moos = await moos.json();
     moos = moos.sort((a, b) => b.date - a.date);
 
@@ -74,7 +74,7 @@ userpageLoad();
 
 async function followUser() {
     checkLoggedIn();
-    let request = await fetch(`/followInfo/follow/${id}`, { method: "GET" });
+    let request = await fetch(`/followInfo/follow/${id}`);
     request = await request.json();
     if (request.success) {
         followingUser();
@@ -85,7 +85,7 @@ async function followUser() {
 
 async function unfollowUser() {
     checkLoggedIn();
-    let request = await fetch(`/followInfo/unfollow/${id}`, { method: "GET" });
+    let request = await fetch(`/followInfo/unfollow/${id}`);
     request = await request.json();
     if (request.success) {
         followingUser();

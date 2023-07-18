@@ -1,7 +1,21 @@
+/**
+ * @constant {HTMLElement} userSearch
+ */
+const userSearch = document.getElementById("userSearch");
+
+/**
+ * 
+ * @param {*} data 
+ * @param {HTMLElement} superParent 
+ */
 async function loadUsers(data, superParent) {
     let templateURL = "/userpage.html?id=*";
     if (window.location.pathname == "/userpage.html") {
         templateURL = `javascript: updateUser("*")`; // Efficiency
+    }
+
+    while (superParent.firstChild) {
+        superParent.removeChild(superParent.lastChild);
     }
 
     for (let user of data) {
@@ -33,10 +47,18 @@ function updateUser(id) {
     loadMoos(id);
 }
 
-async function userBar() {
-    let res = await fetch("/users", { method: "GET" });
+async function userBar(query = "") {
+    let res = await fetch("/users?" + new URLSearchParams({ name: query }));
     let data = await res.json(); // [name, id, description]
     let userAside = document.getElementById("listUsers");
     loadUsers(data, userAside);
 }
+
+async function newSearch() {
+    let query = userSearch.value;
+    userBar(query);
+}
+
+userSearch.addEventListener("change", newSearch);
+
 userBar();

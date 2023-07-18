@@ -14,7 +14,7 @@ window.onload = async function () {
     // Make Sure Signed In
     checkLoggedIn();
 
-    let res = await fetch("/getName", { method: "GET" });
+    let res = await fetch("/getName");
     if (res.status == 403) {
         return alert("Some sort of error occurred, sign in maybe.");
     }

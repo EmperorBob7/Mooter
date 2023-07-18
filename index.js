@@ -93,12 +93,11 @@ app.get("/moos/:id", async (req, res) => {
 // Get moos of people one is following
 app.get("/moos", checkUnauthenticated, async (req, res) => {
     let following = (await User.findById(req.user._id)).following;
-    let retArr = [await Moo.findById("64a97ec9439c0ebb0c8d5684")]; // ADMIN MOO
-    for (let userID of following) {
-        let moos = await Moo.find({ poster: userID });
-        retArr = retArr.concat(moos);
-    }
-    res.json(retArr);
+
+    let otherMoos = await Moo.find({ poster: { $in: following } });
+    otherMoos.push(await Moo.findById("64a97ec9439c0ebb0c8d5684")); // ADMIN MOO
+
+    res.json(otherMoos);
 });
 
 app.post("/moo", checkUnauthenticated, async (req, res) => {
@@ -120,9 +119,10 @@ app.post("/moo", checkUnauthenticated, async (req, res) => {
     return res.status(200).json({ msg: "Success" });
 });
 
+// /users?name=...
 app.get("/users", async (req, res) => {
-    // let filter = req.params.filter;
-    let out = await User.find({});
+    let filter = req.query.name || "";
+    let out = await User.find({ name: { "$regex": filter, "$options": "i" } }).limit(15).maxTimeMS(1000);
     out = out.map(user => [user.name, user._id, user.description]);
     res.json(out);
 });
