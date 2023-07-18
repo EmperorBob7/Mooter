@@ -27,7 +27,6 @@ async function followingUser() {
 async function loadMoos(newId) {
     id = newId;
     followingUser();
-
     let name = await fetch(`/getName/${id}`, { method: "GET" });
     name = await name.json();
     name = name.name;
@@ -74,6 +73,7 @@ function drawGUI(moos) {
 userpageLoad();
 
 async function followUser() {
+    checkLoggedIn();
     let request = await fetch(`/followInfo/follow/${id}`, { method: "GET" });
     request = await request.json();
     if (request.success) {
@@ -84,6 +84,7 @@ async function followUser() {
 }
 
 async function unfollowUser() {
+    checkLoggedIn();
     let request = await fetch(`/followInfo/unfollow/${id}`, { method: "GET" });
     request = await request.json();
     if (request.success) {

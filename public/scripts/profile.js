@@ -1,4 +1,5 @@
 async function loadProfile() {
+    checkLoggedIn();
     let req = await fetch("/getID", { method: "GET" });
     req = await req.json();
     let id = req.id;

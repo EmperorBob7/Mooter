@@ -43,8 +43,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(rateLimit({
-    windowMs: 60 * 1000, // 1 Minute
-    max: 50,
+    windowMs: 5 * 1000, // 5 Seconds
+    max: 60,
     standardHeaders: true
 }));
 mongoose.set("strictQuery", false);
@@ -127,7 +127,9 @@ app.get("/users", async (req, res) => {
     res.json(out);
 });
 
-app.get("/checkLoggedIn", checkUnauthenticated);
+app.get("/checkLoggedIn", checkUnauthenticated, (req, res) => {
+    res.json({ msg: "Logged In" });
+});
 
 /* Cache */
 

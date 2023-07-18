@@ -12,11 +12,9 @@ window.onload = async function () {
     description = document.getElementById("description");
 
     // Make Sure Signed In
+    checkLoggedIn();
+
     let res = await fetch("/getName", { method: "GET" });
-    if (res.redirected) {
-        window.location = res.url;
-        return;
-    }
     if (res.status == 403) {
         return alert("Some sort of error occurred, sign in maybe.");
     }
@@ -40,8 +38,7 @@ async function submitForm() {
         credentials: 'include'
     });
     if (res.redirected) {
-        window.location = res.url;
-        return;
+        alert("Session Ended, Please Copy your Message and sign in before trying again");
     }
     res = await res.json();
     alert(res.msg);
