@@ -28,6 +28,10 @@ textarea {
     border: 2px solid var(--bright);
 }
 
+textarea::-webkit-scrollbar {
+    display: none;
+}
+
 textarea:focus {
     outline: none;
 }

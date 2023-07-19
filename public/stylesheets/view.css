@@ -1,11 +1,3 @@
-:root {
-    --formMarginLeft: 10vw;
-    --bright: #eee;
-    --dark: #202632;
-    --mid: #ccc;
-    --green: #02c9ab;
-}
-
 #view {
     grid-area: view;
     height: 70vh;

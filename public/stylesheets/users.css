@@ -44,11 +44,6 @@ body {
     text-decoration: none;
 }
 
-#listUsers:last-child {
-    color: red !important;
-    /* margin-bottom: 200px; */
-}
-
 .userBox {
     width: 100%;
     padding: 0.5vw;

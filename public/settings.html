@@ -4,12 +4,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Viewing Friends</title>
+    <title>Settings</title>
     <link rel="stylesheet" href="./stylesheets/styles.css">
     <link rel="stylesheet" href="./stylesheets/users.css">
+    <link rel="stylesheet" href="./stylesheets/view.css">
     <link rel="stylesheet" href="./stylesheets/profile.css">
+    <link rel="stylesheet" href="./stylesheets/moo.css">
     <link rel="stylesheet" href="./stylesheets/userpage.css">
-    <link rel="stylesheet" href="./stylesheets/friends.css">
+    <link rel="stylesheet" href="./stylesheets/settings.css">
 </head>
 
 <body>
@@ -22,13 +24,8 @@
     </aside>
 
     <main id="view">
-        <div id="contentContainer">
-            <h3>Following</h3>
-            <div id="followingList" class="contentList"></div>
-            <hr style="margin: 10px;"/>
-            <h3>Followers</h3>
-            <div id="followersList" class="contentList"></div>
-        </div>
+        <h3>Settings</h3>
+        <label for="switch">Theme </label><input class="toggle" type="checkbox" id="themeToggle"/>
     </main>
 
     <aside id="users">
@@ -46,7 +43,6 @@
     <script src="./scripts/settings.js"></script>
     <script src="./scripts/checkLoggedIn.js"></script>
     <script src="./scripts/users.js"></script>
-    <script src="./scripts/friends.js"></script>
     <script src="./scripts/profile.js"></script>
     <script src="./scripts/floatInput.js"></script>
 </body>

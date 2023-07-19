@@ -120,7 +120,7 @@ a {
 
 ::-webkit-scrollbar-track {
     border-radius: 8px;
-    background-color: var(--bright);
+    background-color: var(--mid);
 }
 
 ::-webkit-scrollbar-thumb {
