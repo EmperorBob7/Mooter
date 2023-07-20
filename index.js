@@ -182,3 +182,5 @@ app.listen(PORT, async () => {
     populateNameMap();
     console.log(`Listening at http://localhost:${process.env.PORT}`);
 });
+
+export default app;
