@@ -1,5 +1,5 @@
-const DARK = "#202632", DARK_MID = "#353e51";
-const BRIGHT = "#eee", BRIGHT_MID = "#ccc";
+const DARK = { "--dark": "#202632", "--dark-hover": "#353e51", "--bright": "#eee", "--mid": "#ccc", "--green": "#02c9ab"};
+const LIGHT = { "--dark": "#fefefe", "--dark-hover": "#ccc", "--bright": "#202632", "--mid": "#353e51", "--green": "#02c9ab"};
 let current_theme = localStorage.getItem("theme") || "dark";
 const toggle = document.getElementById("themeToggle");
 
@@ -7,16 +7,14 @@ function updateTheme() {
     let root = document.querySelector(":root").style;
     if (current_theme == "dark") { // Switch to Light
         current_theme = "light";
-        root.setProperty("--bright", DARK);
-        root.setProperty("--mid", DARK_MID);
-        root.setProperty("--dark", BRIGHT);
-        root.setProperty("--dark-hover", BRIGHT_MID);
+        for (let property in LIGHT) {
+            root.setProperty(property, LIGHT[property]);
+        }
     } else { // Switch to Dark
         current_theme = "dark";
-        root.setProperty("--bright", BRIGHT);
-        root.setProperty("--mid", BRIGHT_MID);
-        root.setProperty("--dark", DARK);
-        root.setProperty("--dark-hover", DARK_MID);
+        for (let property in DARK) {
+            root.setProperty(property, DARK[property]);
+        }
     }
     localStorage.setItem("theme", current_theme);
 }

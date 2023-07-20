@@ -16,14 +16,15 @@ body {
     background-color: var(--green);
     font-weight: bold;
     display: inline;
-    margin-bottom: 1vh;
+    margin-top: 1vh;
     position: absolute;
     width: 7vw;
     right: 5%;
 }
 
 #viewingHeader {
-    display: inline;
+    display: inline-block;
+    margin-top: 1vh;
 }
 
 #follow.following {

@@ -4,23 +4,10 @@ const CHARACTER_LIMIT = 250;
 let characterLimit;
 /**@type {HTMLElement}*/
 let description;
-/**@type {String}*/
-let username;
 
 window.onload = async function () {
     characterLimit = document.getElementById("characterLimit");
     description = document.getElementById("description");
-
-    // Make Sure Signed In
-    checkLoggedIn();
-
-    let res = await fetch("/getName");
-    if (res.status == 403) {
-        return alert("Some sort of error occurred, sign in maybe.");
-    }
-    res = await res.json();
-    username = res.name;
-    document.getElementById("name").innerText = username;
 }
 
 async function submitForm() {
