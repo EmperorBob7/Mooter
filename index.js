@@ -183,4 +183,4 @@ app.listen(PORT, async () => {
     console.log(`Listening at http://localhost:${process.env.PORT}`);
 });
 
-export default app;
+module.exports.app = app;
