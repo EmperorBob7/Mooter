@@ -38,6 +38,7 @@ app.use(session({
     cookie: {
         maxAge: 3600000 // 1 hour
     },
+    unset: "destroy",
     store: MongoStore.create({ client: connectToDB().then(() => mongoose.connection.getClient()) })
 }));
 app.use(passport.initialize());
@@ -55,7 +56,11 @@ app.use("/auth", auth); // Routing
 app.use("/followInfo", followingRoute); // Routing
 
 app.get("/", (req, res) => {
-    res.redirect("./register.html");
+    if (req.session) {
+        res.redirect("./moo.html");
+    } else {
+        res.redirect("./register.html");
+    }
 });
 
 app.get("/getID", checkUnauthenticated, (req, res) => {

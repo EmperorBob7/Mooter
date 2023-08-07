@@ -8,6 +8,21 @@ const filter = require("../index.js").filter;
 const addName = require("../index.js").addName;
 const SALT_ROUNDS = 10;
 
+router.get("/logout", async (req, res) => {
+    if (req.session) {
+        req.session.destroy(err => {
+            if (err) {
+                res.status(400).json({ msg: err });
+            } else {
+                req.session = null;
+                res.redirect("../login.html");
+            }
+        });
+    } else {
+        res.status(400).json({ msg: "No session found" })
+    }
+});
+
 router.post("/register", async (req, res) => {
     const inputs = req.body;
     if (!inputs || !inputs.username || !inputs.password) {
