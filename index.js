@@ -96,11 +96,13 @@ app.get("/moos/:id", async (req, res) => {
 });
 
 // Get moos of people one is following
+// /moos?page=X
 app.get("/moos", checkUnauthenticated, async (req, res) => {
+    let page = req.query.page || 0;
     let following = (await User.findById(req.user._id)).following;
 
-    let otherMoos = await Moo.find({ poster: { $in: following } });
-    otherMoos.push(await Moo.findById("64a97ec9439c0ebb0c8d5684")); // ADMIN MOO
+    let otherMoos = await Moo.find({ poster: { $in: following } }).sort({ date: "descending" }).limit(10).skip(page * 10);
+    // otherMoos.push(await Moo.findById("64a97ec9439c0ebb0c8d5684")); // ADMIN MOO
 
     res.json(otherMoos);
 });

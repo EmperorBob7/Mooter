@@ -1,14 +1,32 @@
+let queryPage = 0;
+let idNameMap;
+let isLoading = false;
+
+const loadElement = document.getElementById("loadElement");
+const observer = new IntersectionObserver(view);
+observer.observe(loadElement);
+
 async function view() {
-    let data = await fetch("/moos");
+    if(isLoading) {
+        return;
+    }
+    isLoading = true;
+    let data = await fetch("/moos?" + new URLSearchParams({ page: queryPage }));
     data = await data.json();
     data = data.sort((a, b) => b.date - a.date);
 
-    let names = await fetch("/getAllNames");
-    let idNameMap = await names.json();
+    if (idNameMap == undefined) {
+        let names = await fetch("/getAllNames");
+        idNameMap = await names.json();
+    }
     for (let moo of data) {
         moo.poster = idNameMap[moo.poster].name;
     }
     drawGUI(data);
+    queryPage++;
+    setTimeout(() => {
+        isLoading = false;
+    }, 100);
 }
 
 function drawGUI(moos) {
