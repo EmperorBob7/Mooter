@@ -2,12 +2,12 @@ let queryPage = 0;
 let idNameMap;
 let isLoading = false;
 
-const loadElement = document.getElementById("loadElement");
+let loadElement; // Assign once fetched
+const contentContainer = document.getElementById("contentContainer");
 const observer = new IntersectionObserver(view);
-observer.observe(loadElement);
 
 async function view() {
-    if(isLoading) {
+    if (isLoading) {
         return;
     }
     isLoading = true;
@@ -15,18 +15,24 @@ async function view() {
     data = await data.json();
     data = data.sort((a, b) => b.date - a.date);
 
-    if (idNameMap == undefined) {
-        let names = await fetch("/getAllNames");
-        idNameMap = await names.json();
+    if (data.length == 0) { // No more new moos to pull up
+        observer.disconnect();
     }
+
     for (let moo of data) {
-        moo.poster = idNameMap[moo.poster].name;
+        moo.poster = idNameMap[moo.poster].name; // Replace id with actual name
     }
     drawGUI(data);
+
+    let children = contentContainer.childNodes;
+    if (loadElement) {
+        observer.unobserve(loadElement);
+    }
+    loadElement = children[children.length - 4];
+    observer.observe(loadElement);
+
     queryPage++;
-    setTimeout(() => {
-        isLoading = false;
-    }, 100);
+    setTimeout(() => { isLoading = false; }, 100);
 }
 
 function drawGUI(moos) {
@@ -53,4 +59,10 @@ function drawGUI(moos) {
     }
 }
 
-view();
+async function loadNames() {
+    let names = await fetch("/getAllNames");
+    idNameMap = await names.json();
+    view();
+}
+
+loadNames();
