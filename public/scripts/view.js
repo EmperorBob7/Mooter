@@ -29,7 +29,9 @@ async function view() {
         observer.unobserve(loadElement);
     }
     loadElement = children[children.length - 4];
-    observer.observe(loadElement);
+    if (loadElement) {
+        observer.observe(loadElement);
+    }
 
     queryPage++;
     setTimeout(() => { isLoading = false; }, 100);
